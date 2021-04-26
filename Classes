@@ -1,0 +1,37 @@
+import pygame as pg
+from random import *
+
+
+class Player(pg.sprite.Sprite):
+    def __init__(self, image, pos, group):
+        pg.sprite.Sprite.__init__(self)
+        self.x = pos[0]
+        self.y = pos[1]
+        self.image = image
+        self.rect = self.image.get_rect(center = (self.x, self.y))
+        self.add(group)
+
+class Blue(pg.sprite.Sprite):
+    def __init__(self, image2, group):
+        pg.sprite.Sprite.__init__(self)
+        self.x = randint(100, 1100)
+        self.y = randint(100, 920)
+        self.image = image2
+        self.rect = self.image.get_rect(center = (self.x, self.y))
+        self.add(group)
+
+class Red(pg.sprite.Sprite):
+    def __init__(self, image3, group):
+        pg.sprite.Sprite.__init__(self)
+        self.x = randint(100, 1100)
+        self.y = randint(100, 920)
+        self.image = image3
+        self.rect = self.image.get_rect(center = (self.x, self.y))
+        self.add(group)
+        self.life = 300
+        
+    def update(self):
+        self.life -= 1
+        if self.life <=0:
+            self.kill()
+            
