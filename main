@@ -1,0 +1,141 @@
+# здесь подключаются модули
+import pygame as pg
+import sys
+from Classes import *
+
+pg.init()
+pg.font.init()
+
+# здесь определяются константы,
+# классы и функции
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (125, 125, 125)
+LIGHT_BLUE = (64, 128, 255)
+GREEN = (0, 200, 64)
+YELLOW = (225, 225, 0)
+PINK = (230, 50, 230)
+FPS = 60
+W = 1200
+H = 1020
+
+clock = pg.time.Clock()
+sc = pg.display.set_mode((W, H))
+
+score = 0
+
+
+font1 = pg.font.Font(None, 100)
+
+pos = (0,1)
+
+counter = 0
+
+
+
+image = pg.image.load('image1.png')
+image2 = pg.image.load('image2.png')
+image3 = pg.image.load('image3.png')
+button_surf = pg.image.load('image4.png')
+
+button_rect = button_surf.get_rect(center = ((W//2) - 20, H//2))
+
+
+
+in_menu = True
+
+while in_menu == True:
+    clock.tick(FPS)
+    for i in pg.event.get():
+        if i.type == pg.QUIT:
+            pg.quit()
+            sys.exit()
+    
+        if i.type == pg.MOUSEBUTTONDOWN:
+            print(i.pos)
+            click_x = i.pos[0]
+            click_y = i.pos[1]
+        
+        sc.fill(WHITE)
+        
+        sc.blit(button_surf, button_rect)
+        
+        pg.display.update()
+
+pl_group = pg.sprite.Group()
+blue_group = pg.sprite.Group()
+red_group = pg.sprite.Group()
+
+obj = Player(image, pos, pl_group)
+obj2 = Blue(image2, blue_group)
+ojb3 = Red(image3, red_group)
+
+
+# здесь происходит инициация,
+# создание объектов
+pg.time.set_timer(pg.USEREVENT, 2000)
+
+# если надо до цикла отобразить
+# какие-то объекты, обновляем экран
+pg.display.update()
+
+# главный цикл
+while True:
+    
+    counter+=1
+    
+    text1 = font1.render('Game Over', True,(255, 0, 0))
+    text2 = font1.render('score: ' + str(score), True,(255, 0, 0))
+    
+    # задержка
+    clock.tick(FPS)
+
+    # цикл обработки событий
+    for i in pg.event.get():
+        if i.type == pg.QUIT:
+            pg.quit()
+            sys.exit()
+    
+        if i.type == pg.USEREVENT:
+            blue = Blue(image2, blue_group)
+            red = Red(image3, red_group)
+
+    
+    for b in blue_group:
+        if pg.sprite.spritecollideany(b, pl_group): 
+            score+=1
+            b.kill()
+    
+    
+    if pg.sprite.spritecollideany(obj, red_group): 
+            
+            sc.fill(WHITE)
+            sc.blit(text2, ((W//2)-150, (H//2)-200))
+            sc.blit(text1, ((W//2)-150, (H//2)-100))
+            pg.display.update()
+            
+            print(score)
+            
+            pg.time.delay(5000)
+            
+            pg.quit()
+            sys.exit()
+    
+    #получаем координаты мыши
+    pos = pg.mouse.get_pos()
+
+    obj.rect.x = pos[0]-50
+    obj.rect.y = pos[1]-50
+
+    sc.fill(WHITE)
+    
+    sc.blit(text2, ((W//8)-100, (H//8)-100))
+    
+    pl_group.draw(sc)
+    blue_group.draw(sc)
+    red_group.draw(sc)
+    
+    red_group.update()
+    
+    # обновление экрана
+    pg.display.update()
